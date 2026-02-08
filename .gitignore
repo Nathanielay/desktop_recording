@@ -26,3 +26,4 @@ TestResults.xmldr/
   data.sqlite
   __pycache__/
   *.pyc
+dr/
