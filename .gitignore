@@ -19,4 +19,10 @@ rad.json
 #License-file
 *.flf
 #Test results file
-TestResults.xml
+TestResults.xmldr/
+  dist/
+  build/
+  *.spec
+  data.sqlite
+  __pycache__/
+  *.pyc
