@@ -7,6 +7,7 @@ from app.services.selection_service import SelectionService
 from app.services.grammar_service import GrammarService
 from app.services.llm_service import LlmService
 from app.utils.text_detect import detect_entry_type, is_english
+from app.utils.auto_tags import build_auto_tags
 
 
 class _LlmWorker(QtCore.QObject):
@@ -214,6 +215,15 @@ class MainWindow(QtWidgets.QMainWindow):
                 return json.dumps(value, ensure_ascii=True)
             return str(value)
 
+        auto_tags = []
+        if entry_type == "word":
+            existing_words = self._entry_repo.list_word_entries()
+            auto_tags = build_auto_tags(
+                text,
+                _to_text(enrich.get("translation", "")),
+                existing_words,
+            )
+
         entry_payload = {
             "entry_type": entry_type,
             "text": text,
@@ -227,6 +237,7 @@ class MainWindow(QtWidgets.QMainWindow):
             "tense_form": json.dumps(enrich.get("tense_form", []), ensure_ascii=True),
             "common_meanings": json.dumps(enrich.get("common_meanings", []), ensure_ascii=True),
             "related_entry_ids": json.dumps(enrich.get("related_terms", []), ensure_ascii=True),
+            "tags": json.dumps(auto_tags, ensure_ascii=True),
             "grammar_notes": _to_text(enrich.get("grammar_notes", "")),
             "structure_breakdown": json.dumps(enrich.get("structure_breakdown", []), ensure_ascii=True),
             "key_terms": json.dumps(enrich.get("key_terms", []), ensure_ascii=True),

@@ -71,6 +71,18 @@ class EntryRepo:
         )
         return [dict(row) for row in cursor.fetchall()]
 
+    def list_word_entries(self) -> List[Dict[str, Any]]:
+        cursor = self._db.connection.cursor()
+        cursor.execute(
+            """
+            SELECT id, text, translation, tags
+            FROM entries
+            WHERE entry_type = 'word'
+            ORDER BY created_at DESC
+            """
+        )
+        return [dict(row) for row in cursor.fetchall()]
+
     def update_tags(self, entry_id: int, tags: str) -> None:
         cursor = self._db.connection.cursor()
         cursor.execute(
